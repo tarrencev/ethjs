@@ -23,7 +23,7 @@ export default class Eth {
         return this[CLIENT].post('', {
             id: this[REQUEST_INCREMENTER]++,
             ...this[BASE_CONF],
-            ...params,
+            params,
             method,
         });
     }
