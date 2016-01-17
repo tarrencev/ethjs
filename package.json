@@ -1,0 +1,20 @@
+{
+  "name": "eth.js",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Tarrence van As <tarrence13@gmail.com>",
+  "devDependencies": {
+    "babel-core": "^6.3.26",
+    "babel-loader": "^6.2.0",
+    "babel-plugin-transform-class-properties": "^6.4.0",
+    "babel-plugin-transform-export-extensions": "^6.4.0",
+    "babel-plugin-transform-object-rest-spread": "^6.3.13",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-register": "^6.3.13",
+    "webpack": "^1.12.11",
+    "ws": "^1.0.1"
+  },
+  "dependencies": {
+    "axios": "^0.8.1"
+  }
+}
