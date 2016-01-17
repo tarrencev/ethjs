@@ -25,6 +25,6 @@ export default class Eth {
             ...this[BASE_CONF],
             params,
             method,
-        });
+        }).then(res => res.result);
     }
 }
