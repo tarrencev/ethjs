@@ -1,6 +1,6 @@
 {
   "name": "eth.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "index.js",
   "author": "Tarrence van As <tarrence13@gmail.com>",
   "scripts": {
