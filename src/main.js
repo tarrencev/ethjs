@@ -1,4 +1,5 @@
 import { create } from 'axios';
+import contracts from './contracts';
 
 const BASE_CONF = {
     jsonrpc: '2.0',
@@ -20,10 +21,17 @@ export default class Eth {
 
     send(method, params = []) {
         return this[CLIENT].post('', {
-            id: this[REQUEST_INCREMENTER]++,
             ...BASE_CONF,
-            params,
+            id: this[REQUEST_INCREMENTER]++,
             method,
-        }).then(res => res.data);
+            params,
+        }).then(res => {
+            if (res.data.error) throw res.data.error;
+            return res.data;
+        });
+    }
+
+    get contracts() {
+        return new contracts(this);
     }
 }
