@@ -13,19 +13,23 @@ function getTransactionReceipt(ethClient, txHash) {
 
 function pollForTransactionReceipt(ethClient, txHash) {
     return new Promise((resolve, reject) => {
-        const pollIntervalId = setInterval(
-            () => {
-                getTransactionReceipt(ethClient, txHash)
+        let pollTimeoutId;
+        const pollFunc = () =>
+            getTransactionReceipt(ethClient, txHash)
                     .then(
                         res => {
                             if (res.result) {
-                                clearInterval(pollIntervalId);
+                                clearTimeout(pollTimeoutId);
                                 resolve(res.result);
+                            } else {
+                                clearTimeout(pollTimeoutId);
+                                pollTimeoutId  = setTimeout(pollFunc, TRANSACTION_RECEIPT_POLL_MS);
                             }
                         },
                         err => reject(err)
-                    )
-        }, TRANSACTION_RECEIPT_POLL_MS);
+                    );
+
+        pollFunc();
     });
 }
 
