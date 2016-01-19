@@ -6,11 +6,14 @@ const contractCode = "606060405260405161062f38038061062f833981016040528051018060
 const abi = [{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"purchasedTickets","outputs":[{"name":"id","type":"uint256"},{"name":"eventTime","type":"uint256"},{"name":"price","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"availableTicketTypes","outputs":[{"name":"quantityAvailable","type":"uint256"},{"name":"price","type":"uint256"},{"name":"eventTime","type":"uint256"},{"name":"saleStartTime","type":"uint256"},{"name":"exists","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"availableTickets","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"_quantityAvailable","type":"uint256"},{"name":"_price","type":"uint256"},{"name":"_eventTime","type":"uint256"},{"name":"_saleStartTime","type":"uint256"}],"name":"createTicketType","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"eventName","outputs":[{"name":"","type":"string"}],"type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"type":"function"},{"constant":false,"inputs":[{"name":"_ticketTypeId","type":"uint256"}],"name":"purchaseTicket","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"numTicketsAllocated","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"inputs":[{"name":"_eventName","type":"string"}],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"quantityAvailable","type":"uint256"},{"indexed":false,"name":"price","type":"uint256"},{"indexed":false,"name":"eventTime","type":"uint256"},{"indexed":false,"name":"saleStartTime","type":"uint256"}],"name":"TicketTypeCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"ticketType","type":"uint256"},{"indexed":false,"name":"owner","type":"address"}],"name":"TicketAllocated","type":"event"}];
 
 // client.send('eth_coinbase').then(res => console.log(res), err => console.error(err));
-const contract = client.contracts.create(abi, {
-    from: '0xe0743179eaeb698e5e738ec388b0e44fbda8a492',
-    data: contractCode,
-    gas: 1000000,
-}).subscribe(res => console.log(res), err => console.error(err));
+// const contract = client.contracts.create(abi, {
+//     from: '0xe0743179eaeb698e5e738ec388b0e44fbda8a492',
+//     data: contractCode,
+//     gas: 1000000,
+// }).subscribe(res => console.log(res), err => console.error(err));
 
-// contract.createTicketType(10, 10, 10, 10).then(res => console.log(res), err => console.error(err));
-//
+const contract = client.contracts.at(abi, '0x2983748ec0b8bd47bbd20e34d40584055a6b10a9');
+
+// console.log(contract);
+contract.createTicketType(10, 10, 10, 10).subscribe(res => console.log(res), err => console.error(err));
+

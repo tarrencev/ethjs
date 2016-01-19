@@ -1,4 +1,7 @@
 import ABI from 'ethereumjs-abi';
+import { Observable } from '@reactivex/rxjs';
+
+import { pollForTransactionReceipt, sendTransaction } from './transactions';
 
 const ETH_CLIENT = Symbol();
 
@@ -31,24 +34,42 @@ function buildArgArray(inputs, property) {
         }, []);
 }
 
-function attachContractFunctionHandler(ethClient, context, name, inputs) {
+function attachContractFunctionHandler(ethClient, context, name, inputs, contractAddress) {
     // Attach function to context object
     context[name] = (...args) => {
         // Do some arg enforcement
         expectCorrectArgs(args, inputs);
         // Encode ethereum function call transaction
         const encodedTransaction = abiLib.rawEncode(name, buildArgArray(inputs, 'type'), args);
-        return ethClient.send('eth_sendTransaction', [{
-            from: '0xe0743179eaeb698e5e738ec388b0e44fbda8a492',
-            data: encodedTransaction.toString('hex'),
-            gas: 1000000,
-        }]);
+
+        return Observable.create(observer => {
+            sendTransaction(ethClient, {
+                from: '0xe0743179eaeb698e5e738ec388b0e44fbda8a492',
+                data: encodedTransaction.toString('hex'),
+                gas: 1000000,
+            }).then(
+                res => {
+                    const txHash = res.result;
+                    observer.next({
+                        txHash,
+                    });
+                    pollForTransactionReceipt(ethClient, txHash)
+                        .then(
+                            res => {
+                                observer.next(res);
+                                observer.complete();
+                            },
+                            err => observer.error(err)
+                        );
+                },
+                err => observer.error(err)
+            );
+        });
     };
-    return context;
 }
 
 export default class Contract {
-    constructor(ethClient, abi) {
+    constructor(ethClient, abi, contractAddress) {
         // https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI
         abi.reduce((context, node) => {
             const { type, inputs, name } = node;
@@ -59,7 +80,7 @@ export default class Contract {
                 /* no-op ? since constructor woulnd't be of any use */
             } else {
                 // Spec defines function as default
-                attachContractFunctionHandler(ethClient, context, name, inputs);
+                attachContractFunctionHandler(ethClient, context, name, inputs, contractAddress);
             }
             return context;
         }, this);
