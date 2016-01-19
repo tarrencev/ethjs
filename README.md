@@ -1,1 +1,1 @@
-# eth.js
+# ethjs
