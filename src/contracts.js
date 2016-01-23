@@ -2,7 +2,7 @@ import { create } from 'axios';
 import { Observable } from '@reactivex/rxjs';
 
 import Contract from './contract';
-import { pollForTransactionReceipt, sendTransaction } from './transactions';
+import { pollWithPromise } from './utils';
 
 const ETH_CLIENT = Symbol();
 
@@ -18,7 +18,7 @@ export default class Contracts {
     create(abi, params) {
         return Observable.create(observer => {
             const ethClient = this[ETH_CLIENT];
-            sendTransaction(ethClient, params)
+            ethClient.sendTransaction(params)
                 .then(
                     res => {
                         const txHash = res.result;
@@ -26,7 +26,7 @@ export default class Contracts {
                             txHash,
                         });
 
-                        pollForTransactionReceipt(ethClient, txHash)
+                        pollWithPromise(ethClient.getTransactionReceipt, 2000, txHash)
                             .then(
                                 res => {
                                     const { contractAddress } = res;

@@ -1,8 +1,7 @@
 import ABI from 'ethereumjs-abi';
 import { Observable } from '@reactivex/rxjs';
 
-import { pollForFilterChanges, newFilter } from './filters';
-import { pollForTransactionReceipt, sendTransaction } from './transactions';
+import { pollWithPromise, pollWithObservable } from './utils';
 
 const ETH_CLIENT = Symbol();
 
@@ -38,13 +37,12 @@ function buildArgArray(inputs, property) {
 function attachContractEventHandlers(ethClient, context, name, inputs, contractAddress) {
     context[name] = () => {
         return Observable.create(observer => {
-            newFilter(ethClient, {
+            ethClient.newFilter({
                 fromBlock: 'earliest',
-            })
-                .then(({ result }) =>
-                    pollForFilterChanges(ethClient, result)
-                        .subscribe(res => observer.next(res), err => observer.error(err))
-                )
+            }).then(({ result }) =>
+                pollWithObservable(ethClient.getFilterChanges, 1000, result)
+                    .subscribe(res => observer.next(res), err => observer.error(err))
+            )
         });
     }
 }
@@ -57,7 +55,7 @@ function attachContractFunctionHandlers(ethClient, context, name, inputs, contra
         // Encode ethereum function call transaction
         const encodedTransaction = abiLib.rawEncode(name, buildArgArray(inputs, 'type'), args);
         return Observable.create(observer => {
-            sendTransaction(ethClient, {
+            ethClient.sendTransaction({
                 from: '0xe0743179eaeb698e5e738ec388b0e44fbda8a492',
                 data: encodedTransaction.toString('hex'),
                 gas: 1000000,
@@ -67,7 +65,8 @@ function attachContractFunctionHandlers(ethClient, context, name, inputs, contra
                     observer.next({
                         txHash,
                     });
-                    pollForTransactionReceipt(ethClient, txHash)
+
+                    pollWithPromise(ethClient.getTransactionReceipt, 2000, txHash)
                         .then(
                             res => {
                                 observer.next(res);

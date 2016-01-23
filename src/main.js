@@ -17,6 +17,11 @@ export default class Eth {
         });
 
         this[REQUEST_INCREMENTER] = 0;
+
+        this.newFilter = this.newFilter.bind(this);
+        this.getFilterChanges = this.getFilterChanges.bind(this);
+        this.sendTransaction = this.sendTransaction.bind(this);
+        this.getTransactionReceipt = this.getTransactionReceipt.bind(this);
     }
 
     send(method, params = []) {
@@ -34,4 +39,25 @@ export default class Eth {
     get contracts() {
         return new contracts(this);
     }
+
+    // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_newfilter
+    newFilter(params) {
+        return this.send('eth_newFilter', [ params ]);
+    }
+
+    // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getfilterchanges
+    getFilterChanges(filterId) {
+        return this.send('eth_getFilterChanges', [ filterId ]);
+    }
+
+    // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sendtransaction
+    sendTransaction(params) {
+        return this.send('eth_sendTransaction', [ params ])
+    }
+
+    // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_gettransactionreceipt
+    getTransactionReceipt(txHash) {
+        return this.send('eth_getTransactionReceipt', [ txHash ]);
+    };
+
 }
