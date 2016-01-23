@@ -1,6 +1,7 @@
 import ABI from 'ethereumjs-abi';
 import { Observable } from '@reactivex/rxjs';
 
+import { pollForFilterChanges, newFilter } from './filters';
 import { pollForTransactionReceipt, sendTransaction } from './transactions';
 
 const ETH_CLIENT = Symbol();
@@ -34,14 +35,27 @@ function buildArgArray(inputs, property) {
         }, []);
 }
 
-function attachContractFunctionHandler(ethClient, context, name, inputs, contractAddress) {
+function attachContractEventHandlers(ethClient, context, name, inputs, contractAddress) {
+    context[name] = () => {
+        return Observable.create(observer => {
+            newFilter(ethClient, {
+                fromBlock: 'earliest',
+            })
+                .then(({ result }) =>
+                    pollForFilterChanges(ethClient, result)
+                        .subscribe(res => observer.next(res), err => observer.error(err))
+                )
+        });
+    }
+}
+
+function attachContractFunctionHandlers(ethClient, context, name, inputs, contractAddress) {
     // Attach function to context object
     context[name] = (...args) => {
         // Do some arg enforcement
         expectCorrectArgs(args, inputs);
         // Encode ethereum function call transaction
         const encodedTransaction = abiLib.rawEncode(name, buildArgArray(inputs, 'type'), args);
-
         return Observable.create(observer => {
             sendTransaction(ethClient, {
                 from: '0xe0743179eaeb698e5e738ec388b0e44fbda8a492',
@@ -75,14 +89,16 @@ export default class Contract {
             const { type, inputs, name } = node;
 
             if (type === 'event') {
-                // @TODO: Attach event streams
+                attachContractEventHandlers(ethClient, context, name, inputs, contractAddress);
             } else if (type === 'constructor') {
                 /* no-op ? since constructor woulnd't be of any use */
             } else {
                 // Spec defines function as default
-                attachContractFunctionHandler(ethClient, context, name, inputs, contractAddress);
+                attachContractFunctionHandlers(ethClient, context, name, inputs, contractAddress);
             }
             return context;
         }, this);
+
+        this.address = contractAddress;
     }
 }

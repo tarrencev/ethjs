@@ -25,6 +25,7 @@ export default class Contracts {
                         observer.next({
                             txHash,
                         });
+
                         pollForTransactionReceipt(ethClient, txHash)
                             .then(
                                 res => {

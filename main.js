@@ -13,7 +13,5 @@ const abi = [{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"pu
 // }).subscribe(res => console.log(res), err => console.error(err));
 
 const contract = client.contracts.at(abi, '0x2983748ec0b8bd47bbd20e34d40584055a6b10a9');
-
-// console.log(contract);
+contract.TicketTypeCreated().subscribe(res => console.log(res), err => console.error(err));
 contract.createTicketType(10, 10, 10, 10).subscribe(res => console.log(res), err => console.error(err));
-
