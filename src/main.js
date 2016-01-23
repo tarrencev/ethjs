@@ -18,6 +18,7 @@ export default class Eth {
 
         this[REQUEST_INCREMENTER] = 0;
 
+        this.coinbase = this.coinbase.bind(this);
         this.newFilter = this.newFilter.bind(this);
         this.getFilterChanges = this.getFilterChanges.bind(this);
         this.sendTransaction = this.sendTransaction.bind(this);
@@ -38,6 +39,16 @@ export default class Eth {
 
     get contracts() {
         return new contracts(this);
+    }
+
+    // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_accounts
+    accounts() {
+        return this.send('eth_accounts');
+    }
+
+    // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_coinbase
+    coinbase() {
+        return this.send('eth_coinbase');
     }
 
     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_newfilter
