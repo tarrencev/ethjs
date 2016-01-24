@@ -1,6 +1,6 @@
 {
   "name": "ethjs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "lib/main.js",
   "author": "Tarrence van As <tarrence13@gmail.com>",
   "scripts": {
