@@ -1,6 +1,6 @@
 # ethjs
 
-A light weight promise & observable based Ethereum RPC interface written in ES6.
+A light weight Ethereum RPC interface written in ES6. RPC calls return a promise/stream.
 
 ## Installation
 
