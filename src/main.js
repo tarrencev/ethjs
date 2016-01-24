@@ -18,7 +18,8 @@ export default class Eth {
 
         this[REQUEST_INCREMENTER] = 0;
 
-        this.coinbase = this.coinbase.bind(this);
+        this.getAccounts = this.getAccounts.bind(this);
+        this.getCoinbase = this.getCoinbase.bind(this);
         this.newFilter = this.newFilter.bind(this);
         this.getFilterChanges = this.getFilterChanges.bind(this);
         this.sendTransaction = this.sendTransaction.bind(this);
@@ -33,7 +34,7 @@ export default class Eth {
             params,
         }).then(res => {
             if (res.data.error) throw res.data.error;
-            return res.data;
+            return res.data.result;
         });
     }
 
@@ -42,12 +43,17 @@ export default class Eth {
     }
 
     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_accounts
-    accounts() {
+    getAccounts() {
         return this.send('eth_accounts');
     }
 
+    // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getbalance
+    getBalance(address, blockParam) {
+        return this.send('eth_getBalance', [ address, blockParam ]);
+    }
+
     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_coinbase
-    coinbase() {
+    getCoinbase() {
         return this.send('eth_coinbase');
     }
 

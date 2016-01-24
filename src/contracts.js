@@ -21,7 +21,7 @@ export default class Contracts {
             ethClient.sendTransaction(params)
                 .then(
                     res => {
-                        const txHash = res.result;
+                        const txHash = res;
                         observer.next({
                             txHash,
                         });

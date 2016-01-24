@@ -5,9 +5,9 @@ export function pollWithObservable(func, pollTimeoutMS, ...args) {
         let pollTimeoutId;
         const pollFunc = () =>
             func(...args).then(
-                ({ result }) => {
+                res => {
                     clearTimeout(pollTimeoutId);
-                    observer.next(result);
+                    observer.next(res);
                     pollTimeoutId  = setTimeout(pollFunc, pollTimeoutMS);
                 },
                 err => observer.error(err)
@@ -23,9 +23,9 @@ export function pollWithPromise(func, pollTimeoutMS, ...args) {
         const pollFunc = () =>
             func(...args).then(
                 res => {
-                    if (res.result) {
+                    if (res) {
                         clearTimeout(pollTimeoutId);
-                        resolve(res.result);
+                        resolve(res);
                     } else {
                         clearTimeout(pollTimeoutId);
                         pollTimeoutId  = setTimeout(pollFunc, pollTimeoutMS);

@@ -39,8 +39,8 @@ function attachContractEventHandlers(ethClient, context, name, inputs, contractA
         return Observable.create(observer => {
             ethClient.newFilter({
                 fromBlock: 'earliest',
-            }).then(({ result }) =>
-                pollWithObservable(ethClient.getFilterChanges, 1000, result)
+            }).then(res =>
+                pollWithObservable(ethClient.getFilterChanges, 1000, res)
                     .subscribe(res => observer.next(res), err => observer.error(err))
             )
         });
@@ -61,7 +61,7 @@ function attachContractFunctionHandlers(ethClient, context, name, inputs, contra
                 gas: 1000000,
             }).then(
                 res => {
-                    const txHash = res.result;
+                    const txHash = res;
                     observer.next({
                         txHash,
                     });

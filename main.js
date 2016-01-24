@@ -1,4 +1,4 @@
-import Eth from './src';
+import Eth from './src/main';
 
 const client = new Eth('http://localhost:8543');
 
