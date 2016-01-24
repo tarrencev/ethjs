@@ -1,4 +1,6 @@
-# ethjs
+# ethjs 
+
+**`Still a work in progress`**
 
 A light weight Ethereum RPC interface written in ES6. RPC calls return a promise/stream.
 
