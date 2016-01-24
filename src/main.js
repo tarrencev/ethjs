@@ -42,6 +42,9 @@ export default class Eth {
         return new contracts(this);
     }
 
+    // RPC Error codes - only place I found them documented
+    // https://github.com/ethereum/wiki/blob/6cb2fe00a61273b1b3807bf16d5ac6e51b690826/JSON-RPC-Error-Codes-Improvement-Proposal.md
+
     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_accounts
     getAccounts() {
         return this.send('eth_accounts');
