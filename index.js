@@ -1,3 +1,3 @@
-require('babel-register');
-require('./main');
-// exports.default = require('./lib');
+// require('babel-register');
+// require('./main');
+exports.default = require('./lib');
