@@ -1,6 +1,6 @@
 # ethjs 
 
-**`Still a work in progress`**
+**`Still a work in progress, feel free to log any issues`**
 
 A light weight Ethereum RPC interface written in ES6. RPC calls return a promise/stream.
 
@@ -39,3 +39,6 @@ Events can be subscribed to
 ```js
 contract.AnEvent().subscribe(res => console.log(res), err => console.error(err));
 ```
+
+## Contributing
+Feel free to create issues or pull requests!
