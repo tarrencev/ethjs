@@ -37,9 +37,7 @@ function buildArgArray(inputs, property) {
 function attachContractEventHandlers(ethClient, context, name, inputs, contractAddress) {
     context[name] = () => {
         return Observable.create(observer => {
-            ethClient.newFilter({
-                fromBlock: 'earliest',
-            }).then(res =>
+            ethClient.newBlockFilter().then(res =>
                 pollWithObservable(ethClient.getFilterChanges, 1000, res)
                     .subscribe(res => observer.next(res), err => observer.error(err))
             )

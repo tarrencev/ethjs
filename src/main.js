@@ -17,13 +17,6 @@ export default class Eth {
         });
 
         this[REQUEST_INCREMENTER] = 0;
-
-        this.getAccounts = this.getAccounts.bind(this);
-        this.getCoinbase = this.getCoinbase.bind(this);
-        this.newFilter = this.newFilter.bind(this);
-        this.getFilterChanges = this.getFilterChanges.bind(this);
-        this.sendTransaction = this.sendTransaction.bind(this);
-        this.getTransactionReceipt = this.getTransactionReceipt.bind(this);
     }
 
     send(method, params = []) {
@@ -46,37 +39,42 @@ export default class Eth {
     // https://github.com/ethereum/wiki/blob/6cb2fe00a61273b1b3807bf16d5ac6e51b690826/JSON-RPC-Error-Codes-Improvement-Proposal.md
 
     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_accounts
-    getAccounts() {
+    getAccounts = () => {
         return this.send('eth_accounts');
-    }
+    };
 
     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getbalance
-    getBalance(address, blockParam) {
+    getBalance = (address, blockParam) => {
         return this.send('eth_getBalance', [ address, blockParam ]);
-    }
+    };
 
     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_coinbase
-    getCoinbase() {
+    getCoinbase = () => {
         return this.send('eth_coinbase');
-    }
+    };
 
     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_newfilter
-    newFilter(params) {
+    newFilter = params => {
         return this.send('eth_newFilter', [ params ]);
-    }
+    };
+
+    // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_newblockfilter
+    newBlockFilter = params => {
+        return this.send('eth_newBlockFilter', [ params ]);
+    };
 
     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getfilterchanges
-    getFilterChanges(filterId) {
+    getFilterChanges = filterId => {
         return this.send('eth_getFilterChanges', [ filterId ]);
-    }
+    };
 
     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sendtransaction
-    sendTransaction(params) {
+    sendTransaction = params => {
         return this.send('eth_sendTransaction', [ params ])
-    }
+    };
 
     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_gettransactionreceipt
-    getTransactionReceipt(txHash) {
+    getTransactionReceipt = txHash => {
         return this.send('eth_getTransactionReceipt', [ txHash ]);
     };
 
